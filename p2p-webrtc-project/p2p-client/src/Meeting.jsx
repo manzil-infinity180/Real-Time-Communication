@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 import { Video } from "./Video";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 // creating our peer connection using RTCPeerConnection
 const peerConnection = new RTCPeerConnection({
   /**
@@ -24,8 +24,9 @@ console.log({ peerConnection });
 
 function Meeting() {
   // all states
+  const {meetingId} = useParams();
   const navigate = useNavigate()
-  const [meetingId, setMeetingId] = useState("");
+  const [roomId, setRoomId] = useState("");
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [socketDetail, setSocketDetails] = useState(null);
@@ -44,7 +45,6 @@ function Meeting() {
       .getUserMedia({
         video: true,
         audio: true,
-        peerIdentity: "rahul-vishwakarma",
       })
       .then((stream) => {
         setLocalStream(stream);
@@ -121,7 +121,7 @@ function Meeting() {
   }, []);
 
   const handleJoinMeeting = async () => {
-    if (meetingId.length < 1) {
+    if (roomId.length < 1) {
       return;
     }
     // sending ice candidate
@@ -149,28 +149,32 @@ function Meeting() {
       console.error(err);
     }
     setOption((s) => ({ ...s, joined: true }));
-    navigate(`/meeting/${meetingId}`);
+    navigate(`/meeting/${roomId}`);
   };
 
   if (!option.joined) {
     return (
-      <div className="flex justify-center items-center flex-col h-screen">
+      <div>
         <img
           src="https://webrtcclient.com/wp-content/uploads/2021/09/WebRTC-740-fi.png"
           alt="webrtc"
           loading="lazy"
-          className="w-48 sm:w-72"
+          style={{
+            width:"720px",
+            height:"360px"
+          }}
         />
-        <h3 className="text-xl italic">Join the Meeting</h3>
+        <h1>Join Our Meeting</h1>
         <input
           placeholder="Enter Room Id"
-          className="file-input text-lg font-serif m-4 px-2"
-          value={meetingId}
-          onChange={(e) => setMeetingId(e.target.value)}
+          value={roomId}
+          style={{
+            padding:"5px 2px",
+          }}
+          onChange={(e) => setRoomId(e.target.value)}
         />
         <button
           onClick={handleJoinMeeting}
-          className="text-lg border font-mono rounded bg-blue-600 text-white px-3 py-2"
         >
           Join Now!
         </button>
@@ -182,11 +186,19 @@ function Meeting() {
     <>
       <p>P2P Real time communication</p>
 
-      <div className="bg-white p-6 shadow-lg rounded-md">
-        <div className="flex-col justify-center space-x-4 mb-4 md:flex md:flex-row">
+      <div>
+        <div style={{
+          display:"flex"
+        }}>
           <Video stream={localStream} muted={option.mutedValue} />
           <Video stream={remoteStream} />
         </div>
+        <div>
+        <button onClick={() => setOption((s) => ({ ...s, mutedValue: !option.mutedValue }))}>
+                            {option.mutedValue ? 'Unmute' : 'Mute'}
+                        </button>
+        </div>
+       
       </div>
     </>
   );

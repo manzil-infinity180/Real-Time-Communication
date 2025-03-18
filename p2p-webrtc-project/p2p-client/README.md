@@ -1,12 +1,12 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> From inside `p2p-client` , do npm install and then run `npm run dev` 
 
-Currently, two official plugins are available:
+> Clone the signaling server project - [Backend which act as Signaling Server for this application](https://github.com/manzil-infinity180/webrtc_server), do npm install and then run `npm run dev` - the server is running on port `5006` 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+> Do some fun by visiting `localhost:5173` our frontend 
+ 
 
-## Expanding the ESLint configuration
+<img src="./public/demo.png" alt="p2p-demo-image" >
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Thanks,
+Rahul
