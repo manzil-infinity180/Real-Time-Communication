@@ -1,5 +1,22 @@
 import { useEffect } from "react"
 import {io} from "socket.io-client"
+
+// creating our peer connection using RTCPeerConnection
+const peerConnection = new RTCPeerConnection({
+  /**
+   * iceServers is type of RTCIceServer[]
+   * interface RTCIceServer {
+    credential?: string;
+    urls: string | string[];
+    username?: string;
+  }
+   */
+  iceServers : [{
+    urls: "stun:stun.l.google.com:19302",
+  },],
+});
+
+console.log({peerConnection})
 function App() {
 
   useEffect(() => {
