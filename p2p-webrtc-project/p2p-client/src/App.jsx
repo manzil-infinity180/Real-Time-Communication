@@ -1,41 +1,21 @@
-import { useEffect } from "react"
-import {io} from "socket.io-client"
+import {createBrowserRouter, RouterProvider } from "react-router-dom"
+import Home from "./Home";
+import Meeting from "./Meeting";
 
-// creating our peer connection using RTCPeerConnection
-const peerConnection = new RTCPeerConnection({
-  /**
-   * iceServers is type of RTCIceServer[]
-   * interface RTCIceServer {
-    credential?: string;
-    urls: string | string[];
-    username?: string;
-  }
-   */
-  iceServers : [{
-    urls: "stun:stun.l.google.com:19302",
-  },],
-});
-
-console.log({peerConnection})
 function App() {
-
-  useEffect(() => {
-    // establishing the socket connection 
-    const URL = "http://localhost:5006"
-    const socketIo = io(URL, {
-      transports: ['websocket', 'polling', 'flashsocket'],
-    });
-    socketIo.on('connect', () => {
-      socketIo.on("join", (data) => {
-        console.log(data);
-      })
-    })
-  },[])
-  return (
-    <>
-      <p>P2P Real time communication</p>
-    </>
-  )
+    const router = createBrowserRouter([
+        {
+            path: "/meeting/:meetingId",
+            element: <Meeting />,
+        },
+        {
+            path: "*", 
+            element: <Home />
+        }
+    ]);
+    return (<>
+    <RouterProvider router={router} />
+    </>)
 }
 
-export default App
+export default App;
