@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "eslint.config.js",
+  "type": "module",
+  "scripts": {
+   "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build && node dist/server.js'",
+   "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mediasoup": "^3.15.7",
+    "node": "^18.20.8",
+    "socket.io": "^4.8.1",
+    "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "nodemon": "^3.1.9"
+  }
+}
