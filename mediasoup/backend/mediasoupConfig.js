@@ -46,7 +46,7 @@ const createWorker = async () => {
     console.error("MediaSoup worker has died");
   });
 
-  router = await worker.createRouter({ mediaCodecs: routerOptions });
+  router = await worker.createRouter(routerOptions);
 };
 
 export { worker, router, createWorker };

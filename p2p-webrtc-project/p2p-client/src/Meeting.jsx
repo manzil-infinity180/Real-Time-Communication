@@ -135,6 +135,7 @@ function Meeting() {
 
     try {
       const offer = peerConnection.createOffer();
+      console.log({offer})
       await peerConnection.setLocalDescription(offer);
 
       console.log({

@@ -2,7 +2,7 @@ import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import cors from "cors";
-import {createWorker} from "./mediasoupConfig.js";
+import {createWorker, router} from "./mediasoupConfig.js";
 const app = express();
 const server = createServer(app);
 
@@ -32,12 +32,26 @@ io.on("connection", (socket) => {
   });
 
   // Handle client requests for MediaSoup
-  socket.on("joinRoom", async (roomId, callback) => {
+  socket.on("joinRoom", async ({roomId, username}) => {
     // Room joining logic here
     console.log(`Client joined room: ${roomId}`);
+    console.log({roomId, username});
+
+    socket.join(roomId);
+    io.to(roomId).emit("roomJoined", {username, roomId});
+
+    socket.on('newParticipant', ({ id, stream }) => {
+      socket.to(roomId).emit('newParticipant', { id, stream });
+    });
+
+    socket.on('leaveRoom', ({ username, roomId }) => {
+      socket.leave(roomId);
+      socket.to(roomId).emit('participantLeft', username);
+    });
 
     const transport = await createWebRtcTransport(router);
-    callback({ transportOptions: transport });
+    console.log(transport);
+    // callback({ transportOptions: transport });
   });
 });
 
@@ -62,10 +76,7 @@ const createWebRtcTransport = async (router) => {
   return transport;
 };
 
-server.listen(3000, () => {
+server.listen(3000, async () => {
+  await createWorker();
   console.log("Server is running on port 3000");
 });
-
-(async () => {
-    await createWorker();
-  })();
