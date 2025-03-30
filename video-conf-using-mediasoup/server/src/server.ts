@@ -91,7 +91,7 @@ peers.on("connection", async (socket) => {
    * Create a router for the peer.
    * A router is required to route media to/from this peer.
    */
-  router.createWebRtcTransport;
+  router?.createWebRtcTransport;
   router = await worker.createRouter({
     mediaCodecs: routerOptions,
   });
