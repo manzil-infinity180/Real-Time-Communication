@@ -78,13 +78,18 @@ function Meeting() {
     socketDetail.emit("getRouterRtpCapabilities", (data: any) => {
       setRtpCapabilities(data.routerRtpCapabilities);
       console.log(`getRouterRtpCapabilities: ${data.routerRtpCapabilities}`);
+      console.log({
+        "getRouterRtpCapabilities": data.routerRtpCapabilities
+      });
     });
   };
 
   const createDevice = async () => {
     try {
       const newDevice = new Device();
+      console.log({newDevice})
       if (rtpCapabilities != null) {
+        console.log({rtpCapabilities})
         await newDevice.load({ routerRtpCapabilities: rtpCapabilities });
         setDevice(newDevice);
       }
@@ -117,12 +122,13 @@ function Meeting() {
 
         const transport = device?.createSendTransport(params);
         setProducerTransport(transport || null);
-
+        console.log({transport})
         transport?.on(
           "connect",
           async ({ dtlsParameters }: any, callback: any, errback: any) => {
             try {
               console.log("----------> producer transport has connected");
+              console.log({dtlsParameters});
               // Notify the server that the transport is ready to connect with the provided DTLS parameters
               socketDetail.emit("connectProducerTransport", { dtlsParameters });
               // Callback to indicate success

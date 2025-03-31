@@ -15,7 +15,9 @@ export function Video({stream, muted=true, controls=false}: VideoInterface ) {
     },[videoStream, stream]);
     return (
         <>
-        {console.log(stream)}
+         {
+        console.log({stream})
+         }
         {stream && <>
             <video
             style={{ borderRadius: 10, margin: '4px' }}

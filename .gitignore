@@ -1,3 +1,7 @@
 /node_modules
 node_modules
 .env
+/mediasoup3
+/mediasoup-learning-demo
+/mediasoup-html-js
+

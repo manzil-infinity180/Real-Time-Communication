@@ -60,6 +60,9 @@ const createWorker = async () => {
     rtcMaxPort: 10100, // Maximum RTC port for ICE, DTLS, RTP, etc.
   });
 
+  
+  console.log("newWorker")
+  console.log(newWorker)
   console.log(`Worker process ID ${newWorker.pid}`);
 
   newWorker.on("died", () => {
@@ -75,6 +78,8 @@ const createWorker = async () => {
 
 // Create and initialize the mediasoup Worker.
 worker = await createWorker();
+console.log("worker")
+console.log(worker)
 
 peers.on("connection", async (socket) => {
   console.log("CONNECTED::: SOCKET ID ", socket.id);
@@ -95,6 +100,8 @@ peers.on("connection", async (socket) => {
   router = await worker.createRouter({
     mediaCodecs: routerOptions,
   });
+  console.log("router")
+  console.log(router)
 
   /**
    * Event handler for fetching router RTP capabilities.
@@ -108,6 +115,8 @@ peers.on("connection", async (socket) => {
    */
   socket.on("getRouterRtpCapabilities", (callback) => {
     const routerRtpCapabilities = router.rtpCapabilities;
+    console.log("routerRtpCapabilities")
+    console.log(routerRtpCapabilities)
     callback({ routerRtpCapabilities });
   });
 
@@ -122,20 +131,30 @@ peers.on("connection", async (socket) => {
   socket.on("createTransport", async ({ sender }, callback) => {
     if (sender) {
       producerTransport = await createWebRtcTransport(callback);
+      console.log("producerTransport")
+    console.log(producerTransport)
+    
     } else {
       consumerTransport = await createWebRtcTransport(callback);
+      console.log("consumerTransport")
+      console.log(consumerTransport)
     }
   });
 
   socket.on("connectProducerTransport", async ({ dtlsParameters }) => {
     await producerTransport?.connect({ dtlsParameters });
+    console.log("dtlsParameters")
+      console.log(dtlsParameters)
   });
 
   socket.on("transport-produce", async ({ kind, rtpParameters }, callback) => {
     producer = await producerTransport?.produce({
       kind,
       rtpParameters,
-    });
+    }); 
+    console.log({
+      kind, rtpParameters
+    })
 
     producer?.on("transportclose", () => {
       console.log("TRANSPORT CLOSE ::: Producer transport closed");
@@ -145,10 +164,14 @@ peers.on("connection", async (socket) => {
   });
 
   socket.on("connectConsumerTransport", async ({ dtlsParameters }) => {
+    console.log("dtlsParameters")
+    console.log(dtlsParameters)
     await consumerTransport?.connect({ dtlsParameters });
   });
 
   socket.on("consumeMedia", async ({ rtpCapabilities }, callback) => {
+    console.log("rtpCapabilities")
+    console.log(rtpCapabilities)
     try {
       if (producer) {
         if (!router.canConsume({ producerId: producer?.id, rtpCapabilities })) {
@@ -158,6 +181,7 @@ peers.on("connection", async (socket) => {
           return;
         }
         console.log("CONSUMING :::");
+        console.log(producer)
 
         const consumer = await consumerTransport?.consume({
           producerId: producer.id,
@@ -176,7 +200,13 @@ peers.on("connection", async (socket) => {
           console.log("PRODUCER CLOSING !!!");
           consumer?.close();
         });
-
+        console.log({
+          producerId: producer?.id,
+          id: consumer?.id,
+          kind: consumer?.kind,
+          rtpParameters: consumer?.rtpParameters,
+        });
+        
         callback({
           params: {
             producerId: producer?.id,
